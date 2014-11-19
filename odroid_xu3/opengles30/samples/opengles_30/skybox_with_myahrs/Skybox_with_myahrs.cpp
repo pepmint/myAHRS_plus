@@ -7,10 +7,10 @@
  * copies and copies may only be made to the extent permitted
  * by a licensing agreement from ARM Limited.
  */
- 
+
 /**
  *  Rotate the image displayed on the screen using the attitude from sensor
- *   - 2014.07.27 ('c')void. withrobot.com 
+ *   - 2014.07.27 ('c')void. withrobot.com
  */
 
 #ifndef _WIN32
@@ -33,35 +33,39 @@
 #endif /* _WIN32 */
 
 /*
- * myAHRS+ SDK 
+ * myAHRS+ SDK
  */
 #include "myahrs_plus_for_mali_sdk.hpp"
 
 /* Window resolution. */
-const unsigned int window_width  = 1024;
-const unsigned int window_height = 768;
+//const unsigned int window_width  = 1024;
+//const unsigned int window_height = 768;
+
+const unsigned int window_width  = 1920;
+const unsigned int window_height = 1080;
 
 using namespace MaliSDK;
 
 
 int main(int argc, char** argv)
 {
-    if(argc != 2) {
+    if(argc < 2) {
         printf("usage : %s \"tty device\"\n\t ex) %s /dev/ttyACM0\n\n", argv[0], argv[0]);
         return 1;
     }
-    
+
     /*
-     * Initialize myAHRS+ 
+     * Initialize myAHRS+
      */
     const char* serial_device = argv[1];
+	const char* demo_dir = argv[2];
 
     MyAhrsPlusForMaliSdk sensor(serial_device, 115200);
     if(sensor.initialize() == false) {
         fprintf(stderr, "ERROR: myAHRS+ initialization failure.\n");
         exit(1);
-    } 
-    
+    }
+
     /* Result of linking a program. */
     GLint link_status = GL_FALSE;
 
@@ -87,7 +91,15 @@ int main(int argc, char** argv)
     Quaternion Q_YXZ = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     /* Path to cubemap texture. */
-    char file_name[] = { "assets/greenhouse_skybox-0.ppm" };
+//	char file_name[] = { "assets/greenhouse_skybox-0.ppm" };
+	char file_name[32];
+
+	if (demo_dir == NULL)
+	{
+		demo_dir = "sky";
+	}
+
+	sprintf(file_name, "%s/0.ppm", demo_dir);
 
     /* Used to hold cube-map texture face data when initializing skybox cube-map texture. */
     ImageFile cubemap_image = { 0, 0, NULL };
@@ -153,7 +165,8 @@ int main(int argc, char** argv)
     {
         if (n_face != 0)
         {
-            sprintf(file_name, "assets/greenhouse_skybox-%d.ppm", n_face);
+//            sprintf(file_name, "assets/greenhouse_skybox-%d.ppm", n_face);
+			sprintf(file_name, "%s/%d.ppm", demo_dir, n_face);
 
             cubemap_image = load_ppm_file(file_name);
         }
@@ -219,25 +232,25 @@ int main(int argc, char** argv)
         }
 
         WithRobot::EulerAngle euler_angle = sensor.get_data().euler_angle;
-        
+
         angle_X  = -euler_angle.pitch; // y
         angle_Y  =  euler_angle.yaw;   // z
-        angle_Z  = -euler_angle.roll;  // x 
-        
+        angle_Z  = -euler_angle.roll;  // x
+
         /* Construct quaternions for X, Y and Z axes. */
-        Q_X = construct_quaternion(1.0f, 0.0f, 0.0f, angle_X); 
-        Q_Y = construct_quaternion(0.0f, 1.0f, 0.0f, angle_Y); 
-        Q_Z = construct_quaternion(0.0f, 0.0f, 1.0f, angle_Z); 
+        Q_X = construct_quaternion(1.0f, 0.0f, 0.0f, angle_X);
+        Q_Y = construct_quaternion(0.0f, 1.0f, 0.0f, angle_Y);
+        Q_Z = construct_quaternion(0.0f, 0.0f, 1.0f, angle_Z);
 
         // Y->X->Z
         /* Obtain the resultant quaternion. */
         Q_XZ  = multiply_quaternions(Q_X, Q_Z);
         Q_YXZ = multiply_quaternions(Q_Y, Q_XZ);
-        
+
         /* Compute a modelview matrix. Model matrix is a unit matrix. */
-        construct_modelview_matrix(Q_YXZ, model_view_matrix); 
-        
-        /* In this demo, we do not need to provide the vertex shader with any mesh data, because a predefined set 
+        construct_modelview_matrix(Q_YXZ, model_view_matrix);
+
+        /* In this demo, we do not need to provide the vertex shader with any mesh data, because a predefined set
            of 4 vertices is embedded within the shader. These vertices, expressed in Normalized Device Coordinates,
            correspond to four corners of the visible screen space. By using this vertices to form a triangle strip,
            we end up with a full-screen quad that is later used for rasterization stage. */
@@ -253,9 +266,11 @@ int main(int argc, char** argv)
         GL_CHECK(glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 
         char str_angle[256];
-        sprintf(str_angle, "# myAHRS+ (www.withrobot.com) : roll %.1f, pitch %.1f, yaw %.1f\n", euler_angle.roll, euler_angle.pitch, euler_angle.yaw);
+//        sprintf(str_angle, "# myAHRS+ (www.withrobot.com) : roll %.1f, pitch %.1f, yaw %.1f\n", euler_angle.roll, euler_angle.pitch, euler_angle.yaw);
+		sprintf(str_angle, "[ LG V Task Demo ]\n");
         text->clear();
-        text->addString(0, 0, str_angle, 255, 255, 0, 255);
+//        text->addString(0, 0, str_angle, 255, 255, 0, 255);
+        text->addString(0, 0, str_angle, 0, 255, 0, 255);
         text->draw();
 
         eglSwapBuffers(EGLRuntime::display, EGLRuntime::surface);
@@ -272,7 +287,7 @@ int main(int argc, char** argv)
      * stop myAHRS+
      */
     sensor.stop();
-    
+
     /* End of event loop.
        The window has been closed.
        The only thing we should do now is a clean up. */
