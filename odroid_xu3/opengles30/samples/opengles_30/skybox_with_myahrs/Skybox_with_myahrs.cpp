@@ -46,7 +46,6 @@ const unsigned int window_height = 1080;
 
 using namespace MaliSDK;
 
-
 int main(int argc, char** argv)
 {
     if(argc < 2) {
@@ -125,18 +124,16 @@ int main(int argc, char** argv)
     float model_view_matrix[16] = {0.0f};
 
     /* Intialise the Platform object for platform specific functions. */
-    Platform* platform_L = Platform::getInstance();
-	Platform* platform_R = Platform::getInstance();
+    Platform* platform = Platform::getInstance();
 
-    if(platform_L == NULL)
+    if(platform == NULL)
     {
-        fprintf(stderr, "Could not create platform_L\n");
+        fprintf(stderr, "Could not create platform\n");
         exit(-1);
     }
 
     /* Initialize windowing system. */
-    platform_L->createWindow(window_width, window_height);
-	platform_R->createWindow(window_width, window_height);
+    platform->createWindow(window_width, window_height);
 
     /* Initialize EGL. */
     EGLRuntime::initializeEGL(EGLRuntime::OPENGLES3);
@@ -228,7 +225,7 @@ int main(int argc, char** argv)
     while (shouldContinueTheLoop)
     {
         /* If something happened to the window, leave the loop. */
-        if (platform_L->checkWindow() != Platform::WINDOW_IDLE)
+        if (platform->checkWindow() != Platform::WINDOW_IDLE)
         {
             shouldContinueTheLoop = false;
         }
@@ -307,10 +304,10 @@ int main(int argc, char** argv)
     EGLRuntime::terminateEGL();
 
     /* Shut down windowing system. */
-    platform_L->destroyWindow();
+    platform->destroyWindow();
 
     /* Shut down the Platform object. */
-    delete platform_L;
+    delete platform;
 
     return 0;
 }

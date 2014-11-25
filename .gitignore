@@ -1,8 +1,15 @@
 #files
+
 *.txt
 *.md
+*Makefile
+*.cmake
+odroid_xu3/opengles30/config.sh
+odroid_xu3/opengles30/simple_framework/libsimple_framework2.a
+odroid_xu3/opengles30/simple_framework/libsimple_framework3.a
 
 #directories
+
 odroid_xu3/opengles30/bin_emulator/
 odroid_xu3/opengles30/samples/CMakeFiles/
 odroid_xu3/opengles30/samples/opengles_20/
@@ -11,6 +18,4 @@ odroid_xu3/opengles30/samples/opengles_30/CMakeFiles/
 odroid_xu3/opengles30/samples/opengles_30/skybox_with_myahrs/CMakeFiles/
 odroid_xu3/opengles30/samples/opengles_30/instancing_with_myahrs/
 odroid_xu3/opengles30/simple_framework/CMakeFiles/
-odroid_xu3/opengles30/simple_framework/libsimple_framework2.a
-odroid_xu3/opengles30/simple_framework/libsimple_framework3.a
 
