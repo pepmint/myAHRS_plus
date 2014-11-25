@@ -125,16 +125,18 @@ int main(int argc, char** argv)
     float model_view_matrix[16] = {0.0f};
 
     /* Intialise the Platform object for platform specific functions. */
-    Platform* platform = Platform::getInstance();
+    Platform* platform_L = Platform::getInstance();
+	Platform* platform_R = Platform::getInstance();
 
-    if(platform == NULL)
+    if(platform_L == NULL)
     {
-        fprintf(stderr, "Could not create platform\n");
+        fprintf(stderr, "Could not create platform_L\n");
         exit(-1);
     }
 
     /* Initialize windowing system. */
-    platform->createWindow(window_width, window_height);
+    platform_L->createWindow(window_width, window_height);
+	platform_R->createWindow(window_width, window_height);
 
     /* Initialize EGL. */
     EGLRuntime::initializeEGL(EGLRuntime::OPENGLES3);
@@ -226,7 +228,7 @@ int main(int argc, char** argv)
     while (shouldContinueTheLoop)
     {
         /* If something happened to the window, leave the loop. */
-        if (platform->checkWindow() != Platform::WINDOW_IDLE)
+        if (platform_L->checkWindow() != Platform::WINDOW_IDLE)
         {
             shouldContinueTheLoop = false;
         }
@@ -305,10 +307,10 @@ int main(int argc, char** argv)
     EGLRuntime::terminateEGL();
 
     /* Shut down windowing system. */
-    platform->destroyWindow();
+    platform_L->destroyWindow();
 
     /* Shut down the Platform object. */
-    delete platform;
+    delete platform_L;
 
     return 0;
 }
