@@ -4,6 +4,10 @@
 *.md
 *Makefile
 *.cmake
+*.sdf
+*.sln
+*.v12*
+*.vcxp*
 odroid_xu3/opengles30/config.sh
 odroid_xu3/opengles30/simple_framework/libsimple_framework2.a
 odroid_xu3/opengles30/simple_framework/libsimple_framework3.a
@@ -18,4 +22,6 @@ odroid_xu3/opengles30/samples/opengles_30/CMakeFiles/
 odroid_xu3/opengles30/samples/opengles_30/skybox_with_myahrs/CMakeFiles/
 odroid_xu3/opengles30/samples/opengles_30/instancing_with_myahrs/
 odroid_xu3/opengles30/simple_framework/CMakeFiles/
-
+odroid_xu3/opengles30/lib/
+common_cpp/windows_example/
+odroid_xu3/opengles30/inc/
